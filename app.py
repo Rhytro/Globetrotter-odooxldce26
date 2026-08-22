@@ -360,6 +360,31 @@ def trip_timeline(trip_id):
   sorted_stops = sorted(trip.stops, key=lambda s: s.start_date)
   return render_template('timeline.html', trip=trip, stops=sorted_stops)
 
+@app.route('/trips/<int:trip_id>/export')
+@login_required
+def export_trip(trip_id):
+    trip = Trip.query.get_or_404(trip_id)
+    if trip.user_id != current_user.id and not trip.is_public:
+        flash('Unauthorized access.', 'danger')
+        return redirect(url_for('dashboard'))
+    return render_template('export_trip.html', trip=trip)
+
+@app.route('/trips/<int:trip_id>/packing-list')
+@login_required
+def packing_list(trip_id):
+    trip = Trip.query.get_or_404(trip_id)
+    
+    # Generate dynamic packing items based on trip stops and regions
+    items = ["Passport & Visa", "Universal Power Adapter", "Travel Insurance Docs", "Portable Power Bank"]
+    
+    regions = [stop.city.region for stop in trip.stops]
+    if "Europe" in regions:
+        items.extend(["Comfortable Walking Shoes", "Lightweight Rain Jacket", "Euro Cash"])
+    if "Asia" in regions:
+        items.extend(["Slip-on Shoes (for temples)", "E-SIM / Local Data Card", "Motion Sickness Pills"])
+        
+    return render_template('packing_list.html', trip=trip, items=items)
+
 @app.route('/admin')
 @login_required
 def admin_dashboard():
