@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Welcome to GlobeTrotter{% endblock %}
+{% block content %}
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm border text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold text-primary">Plan Your Dream Journey</h1>
+        <p class="col-md-8 fs-4 mx-auto text-muted">Effortlessly design multi-city itineraries, manage budgets, and share your adventures with the world.</p>
+        <div class="mt-4">
+            <a href="/signup" class="btn btn-primary btn-lg px-4 me-2"><i class="bi bi-person-plus me-2"></i>Get Started</a>
+            <a href="/login" class="btn btn-outline-secondary btn-lg px-4"><i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

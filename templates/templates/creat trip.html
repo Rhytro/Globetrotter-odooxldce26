@@ -1,0 +1,48 @@
+
+{% extends "base.html" %}
+{% block title %}New Trip - GlobeTrotter{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0 p-4">
+            <h3 class="fw-bold text-primary mb-3"><i class="bi bi-airplane me-2"></i>Plan a New Trip</h3>
+            <p class="text-muted mb-4">Set up your destination details, dates, and overview to begin building your itinerary.</p>
+            
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Trip Name</label>
+                    <input type="text" name="name" class="form-control" required placeholder="e.g., European Summer Adventure 2026">
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Start Date</label>
+                        <input type="date" name="start_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">End Date</label>
+                        <input type="date" name="end_date" class="form-control" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Description / Notes (Optional)</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="Brief summary of what this trip is about..."></textarea>
+                </div>
+                
+                <div class="mb-4 form-check">
+                    <input type="checkbox" name="is_public" class="form-check-input" id="isPublicCheck">
+                    <label class="form-check-label" for="isPublicCheck">Make this trip public (sharable with friends)</label>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="/trips" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg me-1"></i>Create Trip</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
