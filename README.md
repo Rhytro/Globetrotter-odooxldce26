@@ -40,8 +40,8 @@ Follow these steps to set up and run the project locally on your machine:
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/your-username/globetrotter.git](https://github.com/your-username/globetrotter.git)
-cd globetrotter
+git clone https://github.com/Rhytro/Globetrotter-odooxldce26.git (https://github.com/Rhytro/Globetrotter-odooxldce26.git)
+cd Globetrotter-odooxldce26
 
 2. Create and Activate a Virtual Environment
 # On Windows
