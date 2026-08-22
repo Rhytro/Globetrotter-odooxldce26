@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Admin Console — GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge bg-danger bg-opacity-10 text-danger fw-bold px-3 py-1.5 rounded-pill mb-1">Administrative Privileges</span>
+            <h2 class="fw-bold mb-0">Platform Overview & Metrics</h2>
+        </div>
+    </div>
+
+    <!-- 3 Core Admin Stat Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="gt-card p-4 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-semibold uppercase">Total Users</span>
+                        <h2 class="fw-extrabold text-dark mt-1 mb-0">{{ total_users }}</h2>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3">
+                        <i class="bi bi-people-fill fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="gt-card p-4 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-semibold uppercase">Trips Created</span>
+                        <h2 class="fw-extrabold text-dark mt-1 mb-0">{{ total_trips }}</h2>
+                    </div>
+                    <div class="bg-success bg-opacity-10 text-success p-3 rounded-3">
+                        <i class="bi bi-suitcase-lg-fill fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="gt-card p-4 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-semibold uppercase">Supported Cities</span>
+                        <h2 class="fw-extrabold text-dark mt-1 mb-0">{{ total_cities }}</h2>
+                    </div>
+                    <div class="bg-info bg-opacity-10 text-info p-3 rounded-3">
+                        <i class="bi bi-geo-alt-fill fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

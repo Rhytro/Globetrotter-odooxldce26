@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ trip.name }} — Shared Itinerary on GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Public Hero Banner -->
+    <div class="gt-card p-4 p-md-5 mb-5 border-0 text-white position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0284c7 100%);">
+        <div class="row align-items-center position-relative z-1">
+            <div class="col-lg-8">
+                <span class="badge bg-success bg-opacity-25 text-white border border-success border-opacity-50 px-3 py-1.5 rounded-pill mb-3">
+                    <i class="bi bi-globe me-1"></i> Public Itinerary
+                </span>
+                <h1 class="display-6 fw-bold mb-2">{{ trip.name }}</h1>
+                <p class="text-light text-opacity-75 lead fs-6 mb-3">{{ trip.description if trip.description else 'A personalized multi-city travel itinerary created with GlobeTrotter.' }}</p>
+                <div class="small text-white text-opacity-75">
+                    <i class="bi bi-calendar3 me-1"></i> {{ trip.start_date.strftime('%B %d, %Y') }} &mdash; {{ trip.end_date.strftime('%B %d, %Y') }} &bull; 
+                    <i class="bi bi-geo-alt me-1"></i> {{ trip.stops|length }} Stops
+                </div>
+            </div>
+            
+            <!-- Clone CTA -->
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('copy_trip', trip_id=trip.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-light btn-lg px-4 py-3 fw-bold text-dark shadow-lg">
+                            <i class="bi bi-copy me-2 text-primary"></i> Clone to My Trips
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('signup') }}" class="btn btn-light btn-lg px-4 py-3 fw-bold text-dark shadow-lg">
+                        <i class="bi bi-person-plus me-2 text-primary"></i> Sign Up to Clone Trip
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Stops Overview -->
+    <h4 class="fw-bold mb-3">Route Breakdown</h4>
+    <div class="row g-4">
+        {% for stop in trip.stops|sort(attribute='order_index') %}
+            <div class="col-md-6 col-lg-4">
+                <div class="gt-card p-4 h-100">
+                    <span class="badge bg-primary bg-opacity-10 text-primary fw-bold mb-2">Stop #{{ stop.order_index }}</span>
+                    <h4 class="fw-bold text-dark mb-1">{{ stop.city.name }}</h4>
+                    <p class="text-muted small mb-3">{{ stop.city.country }} &bull; {{ stop.start_date.strftime('%b %d') }} to {{ stop.end_date.strftime('%b %d') }}</p>
+                    
+                    <div class="border-top pt-3">
+                        <div class="small fw-bold text-secondary mb-2">Activities ({{ stop.activities|length }})</div>
+                        <ul class="list-unstyled small mb-0 space-y-1">
+                            {% for act in stop.activities %}
+                                <li class="py-1 text-muted"><i class="bi bi-check-circle text-primary me-1"></i> {{ act.name }}</li>
+                            {% else %}
+                                <li class="text-muted small fst-italic">Open exploration.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

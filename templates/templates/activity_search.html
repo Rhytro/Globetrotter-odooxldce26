@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Discover Experiences — GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Page Header & Filter Form -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Discover Experiences & Activities</h2>
+            <p class="text-muted small mb-0">Browse curated tours, attractions, and cultural landmarks.</p>
+        </div>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="gt-card p-3 mb-4">
+        <form method="GET" action="{{ url_for('activity_search') }}" class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <select name="category" class="form-select form-select-sm rounded-3">
+                    <option value="">All Categories</option>
+                    <option value="Sightseeing" {% if request.args.get('category') == 'Sightseeing' %}selected{% endif %}>Sightseeing</option>
+                    <option value="Culture" {% if request.args.get('category') == 'Culture' %}selected{% endif %}>Culture & Arts</option>
+                    <option value="Adventure" {% if request.args.get('category') == 'Adventure' %}selected{% endif %}>Adventure & Outdoor</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light">Max Price ($)</span>
+                    <input type="number" name="max_cost" value="{{ request.args.get('max_cost', '') }}" class="form-control" placeholder="e.g. 50">
+                </div>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-gt-primary btn-sm px-3 flex-grow-1">Filter Results</button>
+                <a href="{{ url_for('activity_search') }}" class="btn btn-outline-secondary btn-sm px-3">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Activities Grid -->
+    {% if activities %}
+        <div class="row g-4">
+            {% for act in activities %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="gt-card p-4 h-100 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-primary bg-opacity-10 text-primary small fw-bold">{{ act.category }}</span>
+                            <span class="fs-5 fw-extrabold text-dark">${{ "{:,.2f}".format(act.cost) }}</span>
+                        </div>
+                        <h5 class="fw-bold mb-1 text-dark">{{ act.name }}</h5>
+                        <p class="text-muted small mb-3 flex-grow-1">{{ act.description }}</p>
+                        
+                        <div class="pt-3 border-top d-flex justify-content-between align-items-center text-secondary small">
+                            <span><i class="bi bi-clock me-1"></i> {{ act.duration_hours }} Hours Duration</span>
+                            <span class="text-primary fw-semibold">{{ act.city.name if act.city else 'Worldwide' }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="gt-card p-5 text-center my-4">
+            <i class="bi bi-ticket-perforated text-muted" style="font-size: 3rem;"></i>
+            <h5 class="fw-bold mt-2">No activities match your filters</h5>
+            <p class="text-muted small">Try increasing the budget limit or selecting a broader category.</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
