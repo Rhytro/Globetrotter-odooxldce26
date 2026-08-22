@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Budget Overview: {{ trip.name }} — GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header Navigation -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ url_for('itinerary_builder', trip_id=trip.id) }}" class="text-secondary text-decoration-none small"><i class="bi bi-arrow-left"></i> Back to Builder</a>
+            <h2 class="fw-bold mb-0 mt-1">Financial Intelligence & Breakdown</h2>
+            <p class="text-muted small mb-0">{{ trip.name }} &bull; Target Budget: ${{ "{:,.2f}".format(trip.budget_limit) }}</p>
+        </div>
+        {% if is_overbudget %}
+            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3 py-2 rounded-pill fw-bold">
+                <i class="bi bi-exclamation-octagon-fill me-1"></i> Over Budget Target
+            </span>
+        {% else %}
+            <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill fw-bold">
+                <i class="bi bi-check-circle-fill me-1"></i> Within Budget
+            </span>
+        {% endif %}
+    </div>
+
+    <!-- 3 Core KPI Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="gt-card p-4 border-0">
+                <span class="text-muted small fw-semibold uppercase">Total Projected Cost</span>
+                <h2 class="fw-extrabold text-dark mt-1 mb-0">${{ "{:,.2f}".format(total_cost) }}</h2>
+                <div class="small text-muted mt-2">Sum of activities, stays, & transport</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="gt-card p-4 border-0">
+                <span class="text-muted small fw-semibold uppercase">Target Budget Limit</span>
+                <h2 class="fw-extrabold text-primary mt-1 mb-0">${{ "{:,.2f}".format(trip.budget_limit) }}</h2>
+                <div class="small text-muted mt-2">Maximum planned cap</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="gt-card p-4 border-0">
+                <span class="text-muted small fw-semibold uppercase">Surplus / Deficit</span>
+                <h2 class="fw-extrabold {{ 'text-danger' if is_overbudget else 'text-success' }} mt-1 mb-0">
+                    {{ "-" if is_overbudget else "+" }}${{ "{:,.2f}".format((trip.budget_limit - total_cost)|abs) }}
+                </h2>
+                <div class="small text-muted mt-2">{{ 'Overspending deficit' if is_overbudget else 'Remaining spend' }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Breakdown & Visual Allocation -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="gt-card p-4">
+                <h5 class="fw-bold mb-3">Itemized Expense Categories</h5>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light small text-muted">
+                            <tr>
+                                <th>Expense Category</th>
+                                <th>Calculation Basis</th>
+                                <th class="text-end">Projected Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <tr>
+                                <td class="fw-bold"><i class="bi bi-ticket-perforated text-primary me-2"></i>Activities & Excursions</td>
+                                <td class="text-muted">Direct total from scheduled stop activities</td>
+                                <td class="text-end fw-bold text-dark">${{ "{:,.2f}".format(activity_cost) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"><i class="bi bi-building text-info me-2"></i>Estimated Accommodations</td>
+                                <td class="text-muted">Standard stay estimate ($120/city baseline)</td>
+                                <td class="text-end fw-bold text-dark">${{ "{:,.2f}".format(stay_cost) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"><i class="bi bi-train-front text-warning me-2"></i>Intercity Transit</td>
+                                <td class="text-muted">Standard route transit approximation</td>
+                                <td class="text-end fw-bold text-dark">${{ "{:,.2f}".format(transport_cost) }}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="fw-bold">
+                                <td colspan="2">Total Calculation</td>
+                                <td class="text-end fs-6 text-primary">${{ "{:,.2f}".format(total_cost) }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="gt-card p-4">
+                <h5 class="fw-bold mb-3">Budget Utilization</h5>
+                <p class="small text-muted">Visual meter of your spending limit consumed.</p>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                        <span>Consumed ({{ ((total_cost / trip.budget_limit) * 100)|round|int }}%)</span>
+                        <span>${{ "{:,.0f}".format(total_cost) }} / ${{ "{:,.0f}".format(trip.budget_limit) }}</span>
+                    </div>
+                    <div class="progress" style="height: 12px; border-radius: 6px;">
+                        <div class="progress-bar {{ 'bg-danger' if is_overbudget else 'bg-primary' }}" 
+                             role="progressbar" 
+                             style="width: {{ [((total_cost / trip.budget_limit) * 100)|round|int, 100]|min }}%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border small mt-4 mb-0">
+                    <i class="bi bi-info-circle text-primary me-1"></i>
+                    <strong>Optimization Tip:</strong> Add or remove activities directly in the itinerary builder to adjust total projected costs in real time.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

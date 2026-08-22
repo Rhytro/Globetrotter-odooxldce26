@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Explore Cities — GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Search Hero & Filters -->
+    <div class="gt-card p-4 p-md-5 mb-5 border-0 text-white position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 70%, #0284c7 100%);">
+        <div class="row position-relative z-1">
+            <div class="col-lg-8">
+                <span class="badge bg-primary bg-opacity-25 text-white border border-primary border-opacity-50 px-3 py-1 rounded-pill mb-2 small">
+                    <i class="bi bi-geo-alt me-1"></i> Global City Directory
+                </span>
+                <h1 class="display-6 fw-bold mb-2">Find Your Next Destination</h1>
+                <p class="text-light text-opacity-75 lead fs-6 mb-4">Search through our curated database of travel hubs categorized by region and affordability.</p>
+                
+                <form method="GET" action="{{ url_for('city_search') }}" class="row g-2">
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" name="q" value="{{ request.args.get('q', '') }}" class="form-control border-0 py-2.5" placeholder="Search city name (e.g. Paris, Tokyo)...">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <select name="region" class="form-select border-0 py-2.5">
+                            <option value="">All Regions</option>
+                            <option value="Europe" {% if request.args.get('region') == 'Europe' %}selected{% endif %}>Europe</option>
+                            <option value="Asia" {% if request.args.get('region') == 'Asia' %}selected{% endif %}>Asia</option>
+                            <option value="Americas" {% if request.args.get('region') == 'Americas' %}selected{% endif %}>Americas</option>
+                            <option value="Africa" {% if request.args.get('region') == 'Africa' %}selected{% endif %}>Africa</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="submit" class="btn btn-gt-primary w-100 py-2.5">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Destinations ({{ cities|length }})</h4>
+        {% if request.args.get('q') or request.args.get('region') %}
+            <a href="{{ url_for('city_search') }}" class="text-muted small text-decoration-none"><i class="bi bi-x-circle me-1"></i>Clear filters</a>
+        {% endif %}
+    </div>
+
+    {% if cities %}
+        <div class="row g-4">
+            {% for city in cities %}
+                <div class="col-sm-6 col-lg-4">
+                    <div class="gt-card overflow-hidden h-100 d-flex flex-column border-0 shadow-sm">
+                        <div style="height: 200px; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.85) 100%), url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=600&q=80') center/cover;" class="d-flex flex-column justify-content-between p-3 text-white">
+                            <span class="badge bg-dark bg-opacity-60 backdrop-blur align-self-end rounded-pill">
+                                <i class="bi bi-fire text-danger me-1"></i> {{ city.popularity }}% Popular
+                            </span>
+                            <div>
+                                <h4 class="fw-bold mb-0 text-white">{{ city.name }}</h4>
+                                <span class="text-white text-opacity-75 small">{{ city.country }} &bull; {{ city.region }}</span>
+                            </div>
+                        </div>
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="small text-muted">Cost Index</span>
+                                <div class="text-warning">
+                                    {% for i in range(5) %}
+                                        <i class="bi bi-currency-dollar {% if i < city.cost_index %}text-warning{% else %}text-muted opacity-25{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="mt-auto">
+                                <a href="{{ url_for('activity_search', city_id=city.id) }}" class="btn btn-sm btn-outline-primary w-100 rounded-3">
+                                    <i class="bi bi-ticket-perforated me-1"></i> View Activities in {{ city.name }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="gt-card p-5 text-center my-4">
+            <i class="bi bi-geo text-muted" style="font-size: 3rem;"></i>
+            <h5 class="fw-bold mt-2">No matching cities found</h5>
+            <p class="text-muted small">Try searching with a different keyword or selecting another region.</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

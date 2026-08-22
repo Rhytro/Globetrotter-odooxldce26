@@ -1,30 +1,60 @@
 {% extends "base.html" %}
-{% block title %}Sign Up - GlobeTrotter{% endblock %}
+{% block title %}Create Account — GlobeTrotter{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card shadow-sm border-0 p-4">
-            <h3 class="fw-bold text-center mb-4 text-primary">Create Account</h3>
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <div class="mb-3">
-                    <label class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control" required placeholder="johndoe">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Email address</label>
-                    <input type="email" name="email" class="form-control" required placeholder="name@example.com">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn btn-primary w-100 py-2"><i class="bi bi-person-plus me-2"></i>Register</button>
-            </form>
-            <div class="text-center mt-3">
-                <small class="text-muted">Already have an account? <a href="/login">Login</a></small>
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100 align-items-stretch">
+        
+        <!-- Left Hero Image Column -->
+        <div class="col-lg-6 d-none d-lg-flex position-relative flex-column justify-content-between p-5 text-white" 
+             style="background: linear-gradient(180deg, rgba(15,23,42,0.35) 0%, rgba(15,23,42,0.85) 100%), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;">
+            <div class="badge bg-white bg-opacity-25 backdrop-blur align-self-start px-3 py-2 rounded-pill fs-7">
+                <i class="bi bi-compass me-1"></i> Start planning today
+            </div>
+            <div>
+                <h1 class="display-5 fw-bold leading-tight mb-3">Map routes, forecast costs, and travel smarter.</h1>
+                <p class="fs-6 text-white text-opacity-75 max-w-md">Join travelers building customized day-by-day itineraries with integrated cost calculation.</p>
             </div>
         </div>
+
+        <!-- Right Form Column -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center p-4 p-sm-5 bg-white">
+            <div class="w-100" style="max-width: 420px;">
+                <div class="mb-4">
+                    <h2 class="fw-bold text-dark mb-1">Create your account</h2>
+                    <p class="text-muted small">Set up your profile to begin organizing multi-city trips.</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('signup') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <div class="form-floating mb-3">
+                        <input type="text" name="name" class="form-control rounded-3" id="nameInput" placeholder="Alex Walker" required>
+                        <label for="nameInput"><i class="bi bi-person me-1 text-muted"></i> Full Name</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control rounded-3" id="emailInput" placeholder="name@example.com" required>
+                        <label for="emailInput"><i class="bi bi-envelope me-1 text-muted"></i> Email address</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="password" name="password" class="form-control rounded-3" id="passwordInput" placeholder="••••••••" required minlength="6">
+                        <label for="passwordInput"><i class="bi bi-lock me-1 text-muted"></i> Password (min 6 chars)</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-gt-primary w-100 py-3 mb-3 d-flex align-items-center justify-content-center gap-2">
+                        <span>Get Started Free</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="small text-muted mb-0">Already registered? <a href="{{ url_for('login') }}" class="text-primary fw-bold text-decoration-none">Sign in here</a></p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

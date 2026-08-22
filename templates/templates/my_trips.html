@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}My Trips — GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">My Itineraries</h2>
+            <p class="text-muted small mb-0">Manage, edit, clone, and track all your scheduled journeys.</p>
+        </div>
+        <a href="{{ url_for('create_trip') }}" class="btn btn-gt-primary px-4 py-2">
+            <i class="bi bi-plus-lg me-1"></i> Create New Trip
+        </a>
+    </div>
+
+    {% if trips %}
+        <div class="row g-4">
+            {% for trip in trips %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="gt-card h-100 d-flex flex-column overflow-hidden">
+                        
+                        <!-- Card Hero Cover Image -->
+                        <div class="position-relative" style="height: 170px; background: linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.7) 100%), url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80') center/cover;">
+                            <div class="position-absolute top-0 end-0 p-3 d-flex gap-2">
+                                {% if trip.is_public %}
+                                    <span class="badge bg-success bg-opacity-90 text-white rounded-pill px-2.5 py-1.5 fw-semibold small">
+                                        <i class="bi bi-globe me-1"></i> Public
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-dark bg-opacity-75 text-white rounded-pill px-2.5 py-1.5 fw-semibold small">
+                                        <i class="bi bi-lock-fill me-1"></i> Private
+                                    </span>
+                                {% endif %}
+                                <span class="badge bg-white text-dark shadow-sm rounded-pill px-2.5 py-1.5 fw-bold small">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ trip.stops|length }} Stops
+                                </span>
+                            </div>
+                            <div class="position-absolute bottom-0 start-0 p-3 text-white">
+                                <h5 class="fw-bold mb-0 text-white">{{ trip.name }}</h5>
+                                <span class="small text-light text-opacity-75">{{ trip.start_date.strftime('%b %d') }} – {{ trip.end_date.strftime('%b %d, %Y') }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <p class="text-muted small mb-3 flex-grow-1">
+                                {{ trip.description if trip.description else 'No special notes provided for this trip.' }}
+                            </p>
+
+                            <div class="p-2.5 rounded-3 bg-light border mb-3">
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span>Target Budget Cap</span>
+                                    <span class="fw-bold text-dark">${{ "{:,.2f}".format(trip.budget_limit) }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Fast Action Links -->
+                            <div class="d-flex gap-2 pt-2 border-top">
+                                <a href="{{ url_for('itinerary_builder', trip_id=trip.id) }}" class="btn btn-sm btn-gt-primary flex-grow-1">
+                                    <i class="bi bi-pencil-square me-1"></i> Builder
+                                </a>
+                                <a href="{{ url_for('trip_timeline', trip_id=trip.id) }}" class="btn btn-sm btn-outline-secondary" title="View Timeline">
+                                    <i class="bi bi-clock-history"></i>
+                                </a>
+                                <a href="{{ url_for('trip_budget', trip_id=trip.id) }}" class="btn btn-sm btn-outline-secondary" title="View Budget">
+                                    <i class="bi bi-wallet2"></i>
+                                </a>
+                                <a href="{{ url_for('public_itinerary', trip_id=trip.id) }}" class="btn btn-sm btn-outline-primary" title="Share View">
+                                    <i class="bi bi-share"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="gt-card p-5 text-center my-4">
+            <div class="bg-light text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 68px; height: 68px; font-size: 2.2rem;">
+                <i class="bi bi-suitcase-lg"></i>
+            </div>
+            <h4 class="fw-bold">No trips on record</h4>
+            <p class="text-muted small mx-auto mb-4" style="max-width: 360px;">You haven't planned any trips yet. Create your first itinerary to start organizing stops and activities.</p>
+            <a href="{{ url_for('create_trip') }}" class="btn btn-gt-primary px-4 py-2">
+                <i class="bi bi-plus-lg me-1"></i> Plan My First Trip
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
